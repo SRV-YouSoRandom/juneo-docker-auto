@@ -1,4 +1,4 @@
-# JuneoGo Docker Auto Setup
+# Juneo Node with Docker Auto Setup
 
 This guide will walk you through setting up the Juneogo Docker container on your **Ubuntu** system. The instructions cover everything from installation to managing your Docker container.
 
