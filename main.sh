@@ -94,7 +94,7 @@ docker compose up -d juneogo
 read -p "Do you want to create a backup of staking files? (y/n): " backup_choice
 if [[ "$backup_choice" == "y" || "$backup_choice" == "yes" ]]; then
     echo -e "\033[1;32m[INFO] Creating backup of staking files...\033[0m"
-    cp -r juneogo-docker/juneogo/.juneogo/staking/ ~/juneo-staking-backup
+    cp -r juneogo/.juneogo/staking/ ~/juneo-staking-backup
     if [[ $? -eq 0 ]]; then
         echo -e "\033[1;32m[INFO] Backup successfully created in $BACKUP_DIR.\033[0m"
     else
