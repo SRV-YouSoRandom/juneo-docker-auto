@@ -9,7 +9,15 @@ echo -e "\033[1;34m*      JuneoGo Docker Auto Setup         *\033[0m"
 echo -e "\033[1;34m*                                         *\033[0m"
 echo -e "\033[1;34m*******************************************\033[0m"
 
-# Function to check if Docker is installed
+# Check if port 9650 is in use
+check_port_9650() {
+    if ss -tuln | grep -q ":9650"; then
+        echo -e "\033[1;31m[ERROR] Port 9650 is already in use. Please free it before proceeding.\033[0m"
+        exit 1
+    fi
+}
+
+# Check if Docker is installed
 check_docker_installed() {
     if ! command -v docker &> /dev/null; then
         echo -e "\033[1;33m[WARNING] Docker is not installed. Proceeding with installation...\033[0m"
@@ -28,17 +36,9 @@ check_juneogo_container() {
     fi
 }
 
-# Check if port 9650 is in use
-check_port_9650() {
-    if ss -tuln | grep -q ":9650"; then
-        echo -e "\033[1;31m[ERROR] Port 9650 is already in use. Please free it before proceeding.\033[0m"
-        exit 1
-    fi
-}
-
 # Perform pre-checks
-check_juneogo_container
 check_port_9650
+check_juneogo_container
 
 # Update and install prerequisites
 echo -e "\033[1;32m[INFO] Updating package list and installing prerequisites...\033[0m"
@@ -94,9 +94,7 @@ docker compose up -d juneogo
 read -p "Do you want to create a backup of staking files? (y/n): " backup_choice
 if [[ "$backup_choice" == "y" || "$backup_choice" == "yes" ]]; then
     echo -e "\033[1;32m[INFO] Creating backup of staking files...\033[0m"
-    BACKUP_DIR=~/juneo-staking-backup
-    mkdir -p "$BACKUP_DIR"
-    cp -r juneogo-docker/juneogo/.juneogo/staking/* "$BACKUP_DIR/"
+    cp -r juneogo-docker/juneogo/.juneogo/staking/ ~/juneo-staking-backup
     if [[ $? -eq 0 ]]; then
         echo -e "\033[1;32m[INFO] Backup successfully created in $BACKUP_DIR.\033[0m"
     else
