@@ -1,8 +1,12 @@
 #!/bin/bash
 
 # Styled header
+clear
 echo -e "\033[1;34m*******************************************\033[0m"
-echo -e "\033[1;34m*             By SRV                     *\033[0m"
+echo -e "\033[1;34m*                                         *\033[0m"
+echo -e "\033[1;34m*               By SRV                   *\033[0m"
+echo -e "\033[1;34m*      JuneoGo Docker Auto Setup         *\033[0m"
+echo -e "\033[1;34m*                                         *\033[0m"
 echo -e "\033[1;34m*******************************************\033[0m"
 
 # Update and install prerequisites
@@ -54,6 +58,17 @@ EOL
 echo -e "\033[1;32m[INFO] Building and starting Docker containers...\033[0m"
 docker compose build
 docker compose up -d juneogo
+
+# Ask the user if they want to create a backup
+read -p "Do you want to create a backup of staking files? (y/n): " backup_choice
+if [[ "$backup_choice" == "y" || "$backup_choice" == "yes" ]]; then
+    echo -e "\033[1;32m[INFO] Creating backup of staking files...\033[0m"
+    mkdir -p ~/juneo-staking-backup
+    cp juneogo/.juneogo/staking/* ~/juneo-staking-backup/
+    echo -e "\033[1;32m[INFO] Backup created in ~/juneo-staking-backup.\033[0m"
+else
+    echo -e "\033[1;33m[INFO] Skipping backup creation.\033[0m"
+fi
 
 # Completion message
 echo -e "\033[1;34m*******************************************\033[0m"
