@@ -2,26 +2,43 @@
 
 # Styled header
 clear
-echo -e "\033[1;34m*************************************************\033[0m"
-echo -e "\033[1;34m*                                               *\033[0m"
-echo -e "\033[1;34m*                   By SRV                     *\033[0m"
-echo -e "\033[1;34m*          JuneoGo Docker Auto Setup           *\033[0m"
-echo -e "\033[1;34m*                                               *\033[0m"
-echo -e "\033[1;34m*************************************************\033[0m"
+echo -e "\033[1;34m*******************************************\033[0m"
+echo -e "\033[1;34m*                                         *\033[0m"
+echo -e "\033[1;34m*               By SRV                   *\033[0m"
+echo -e "\033[1;34m*      JuneoGo Docker Auto Setup         *\033[0m"
+echo -e "\033[1;34m*                                         *\033[0m"
+echo -e "\033[1;34m*******************************************\033[0m"
 
-# Check for existing Docker containers with the name "juneogo"
-echo -e "\033[1;32m[INFO] Checking for existing 'juneogo' containers...\033[0m"
-if sudo docker ps --filter "name=juneogo" --format "{{.Names}}" | grep -q "juneogo"; then
-    echo -e "\033[1;31m[ERROR] A container named 'juneogo' is already running. Please stop it before proceeding.\033[0m"
-    exit 1
-fi
+# Function to check if Docker is installed
+check_docker_installed() {
+    if ! command -v docker &> /dev/null; then
+        echo -e "\033[1;33m[WARNING] Docker is not installed. Proceeding with installation...\033[0m"
+        return 1
+    fi
+    return 0
+}
+
+# Check for running JuneoGo container
+check_juneogo_container() {
+    if check_docker_installed; then
+        if docker ps --filter "name=juneogo" --format '{{.Names}}' | grep -q "juneogo"; then
+            echo -e "\033[1;31m[ERROR] A container named 'juneogo' is already running. Please stop it before proceeding.\033[0m"
+            exit 1
+        fi
+    fi
+}
 
 # Check if port 9650 is in use
-echo -e "\033[1;32m[INFO] Checking if port 9650 is available...\033[0m"
-if sudo netstat -tuln | grep -q ":9650"; then
-    echo -e "\033[1;31m[ERROR] Port 9650 is already in use. Please free it before proceeding.\033[0m"
-    exit 1
-fi
+check_port_9650() {
+    if ss -tuln | grep -q ":9650"; then
+        echo -e "\033[1;31m[ERROR] Port 9650 is already in use. Please free it before proceeding.\033[0m"
+        exit 1
+    fi
+}
+
+# Perform pre-checks
+check_juneogo_container
+check_port_9650
 
 # Update and install prerequisites
 echo -e "\033[1;32m[INFO] Updating package list and installing prerequisites...\033[0m"
@@ -90,6 +107,6 @@ else
 fi
 
 # Completion message
-echo -e "\033[1;34m*************************************************\033[0m"
-echo -e "\033[1;34m* Installation Complete - By SRV               *\033[0m"
-echo -e "\033[1;34m*************************************************\033[0m"
+echo -e "\033[1;34m*******************************************\033[0m"
+echo -e "\033[1;34m* Installation Complete - By SRV         *\033[0m"
+echo -e "\033[1;34m*******************************************\033[0m"
