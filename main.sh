@@ -2,12 +2,26 @@
 
 # Styled header
 clear
-echo -e "\033[1;34m*******************************************\033[0m"
-echo -e "\033[1;34m*                                         *\033[0m"
-echo -e "\033[1;34m*               By SRV                   *\033[0m"
-echo -e "\033[1;34m*      JuneoGo Docker Auto Setup         *\033[0m"
-echo -e "\033[1;34m*                                         *\033[0m"
-echo -e "\033[1;34m*******************************************\033[0m"
+echo -e "\033[1;34m*************************************************\033[0m"
+echo -e "\033[1;34m*                                               *\033[0m"
+echo -e "\033[1;34m*                   By SRV                     *\033[0m"
+echo -e "\033[1;34m*          JuneoGo Docker Auto Setup           *\033[0m"
+echo -e "\033[1;34m*                                               *\033[0m"
+echo -e "\033[1;34m*************************************************\033[0m"
+
+# Check for existing Docker containers with the name "juneogo"
+echo -e "\033[1;32m[INFO] Checking for existing 'juneogo' containers...\033[0m"
+if sudo docker ps --filter "name=juneogo" --format "{{.Names}}" | grep -q "juneogo"; then
+    echo -e "\033[1;31m[ERROR] A container named 'juneogo' is already running. Please stop it before proceeding.\033[0m"
+    exit 1
+fi
+
+# Check if port 9650 is in use
+echo -e "\033[1;32m[INFO] Checking if port 9650 is available...\033[0m"
+if sudo netstat -tuln | grep -q ":9650"; then
+    echo -e "\033[1;31m[ERROR] Port 9650 is already in use. Please free it before proceeding.\033[0m"
+    exit 1
+fi
 
 # Update and install prerequisites
 echo -e "\033[1;32m[INFO] Updating package list and installing prerequisites...\033[0m"
@@ -65,7 +79,7 @@ if [[ "$backup_choice" == "y" || "$backup_choice" == "yes" ]]; then
     echo -e "\033[1;32m[INFO] Creating backup of staking files...\033[0m"
     BACKUP_DIR=~/juneo-staking-backup
     mkdir -p "$BACKUP_DIR"
-    cp -r juneogo/.juneogo/staking/* "$BACKUP_DIR/"
+    cp -r juneogo-docker/juneogo/.juneogo/staking/* "$BACKUP_DIR/"
     if [[ $? -eq 0 ]]; then
         echo -e "\033[1;32m[INFO] Backup successfully created in $BACKUP_DIR.\033[0m"
     else
@@ -76,6 +90,6 @@ else
 fi
 
 # Completion message
-echo -e "\033[1;34m*******************************************\033[0m"
-echo -e "\033[1;34m* Installation Complete - By SRV         *\033[0m"
-echo -e "\033[1;34m*******************************************\033[0m"
+echo -e "\033[1;34m*************************************************\033[0m"
+echo -e "\033[1;34m* Installation Complete - By SRV               *\033[0m"
+echo -e "\033[1;34m*************************************************\033[0m"
