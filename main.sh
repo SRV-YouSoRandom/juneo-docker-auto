@@ -64,7 +64,7 @@ read -p "Do you want to create a backup of staking files? (y/n): " backup_choice
 if [[ "$backup_choice" == "y" || "$backup_choice" == "yes" ]]; then
     echo -e "\033[1;32m[INFO] Creating backup of staking files...\033[0m"
     mkdir -p ~/juneo-staking-backup
-    cp juneogo/.juneogo/staking/* ~/juneo-staking-backup/
+    cp juneogo-docker/juneogo/.juneogo/staking/* ~/juneo-staking-backup/
     echo -e "\033[1;32m[INFO] Backup created in ~/juneo-staking-backup.\033[0m"
 else
     echo -e "\033[1;33m[INFO] Skipping backup creation.\033[0m"
